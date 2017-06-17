@@ -1,6 +1,6 @@
 # SimpleWebApi
 
-Building a simple Web API project using these concepts:
+Building a simple Web API project using the following concepts:
 
 * Command/Query objects with handlers
 * Decorators instead of AOP
