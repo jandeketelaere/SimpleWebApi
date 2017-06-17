@@ -7,4 +7,6 @@ Building a simple Web API project using the following concepts:
 * Mediator
 * ...
 
-All these concepts are based on the blogs & video's on my blog
+All these concepts are based on the blogs & video's on my blog.
+
+My goal is to keep these implementations as simple as possible (without using too much magic).
