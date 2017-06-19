@@ -16,12 +16,21 @@ namespace SimpleWebApi.Features.Apple
             public IEnumerable<string> Apples { get; set; }
         }
 
-        public class Handler : IRequestHandler<Request, Response>
+        public class Validator : IAsyncRequestValidator<Request>
         {
-            public async Task<Response> Handle(Request request)
+            public async Task<ValidationResult> ValidateAsync(Request request)
             {
-                await Task.Delay(1000);
+                return new ValidationResult
+                {
+                    IsSuccessful = false
+                };
+            }
+        }
 
+        public class Handler : IAsyncRequestHandler<Request, Response>
+        {
+            public async Task<Response> HandleAsync(Request request)
+            {
                 return new Response
                 {
                     Apples = new[] { "apple1", "apple2" }
