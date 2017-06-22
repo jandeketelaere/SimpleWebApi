@@ -6,15 +6,15 @@ namespace SimpleWebApi.Infrastructure
 
     public interface IRequest<TResponse> { }
 
-    public interface IAsyncRequestHandler<TRequest>
+    public interface IRequestHandler<TRequest>
         where TRequest : IRequest
     {
-        Task HandleAsync(TRequest request);
+        Task Handle(TRequest request);
     }
 
-    public interface IAsyncRequestHandler<TRequest, TResponse>
+    public interface IRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
-        Task<TResponse> HandleAsync(TRequest request);
+        Task<TResponse> Handle(TRequest request);
     }
 }

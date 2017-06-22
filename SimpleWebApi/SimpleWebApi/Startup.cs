@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,8 @@ using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
 using SimpleWebApi.Features.Apple;
 using SimpleWebApi.Infrastructure;
+using SimpleWebApi.Infrastructure.Decorators;
+using SimpleWebApi.Infrastructure.Middleware;
 using System.Reflection;
 
 namespace SimpleWebApi
@@ -34,7 +37,9 @@ namespace SimpleWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            services
+                .AddMvc()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(container));
             services.UseSimpleInjectorAspNetRequestScoping(container);
@@ -44,16 +49,18 @@ namespace SimpleWebApi
 
         private void RegisterTypes()
         {
-            container.Register(typeof(IAsyncRequestHandler<,>), new[] { typeof(IAsyncRequestHandler<,>).GetTypeInfo().Assembly }, Lifestyle.Singleton);
-            container.Register(typeof(IAsyncRequestHandler<>), new[] { typeof(IAsyncRequestHandler<>).GetTypeInfo().Assembly }, Lifestyle.Singleton);
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            container.Register(typeof(IAsyncRequestValidator<>), new[] { typeof(IAsyncRequestValidator<>).GetTypeInfo().Assembly }, Lifestyle.Singleton);
-            container.RegisterConditional(typeof(IAsyncRequestValidator<>), typeof(NullAsyncRequestValidator<>), Lifestyle.Singleton, c => !c.Handled);
+            container.Register(typeof(IRequestHandler<,>), new[] { typeof(IRequestHandler<,>).GetTypeInfo().Assembly });
+            container.Register(typeof(IRequestHandler<>), new[] { typeof(IRequestHandler<>).GetTypeInfo().Assembly });
 
-            container.RegisterDecorator(typeof(IAsyncRequestHandler<,>), typeof(AsyncRequestHandlerValidationDecorator<,>), Lifestyle.Singleton);
-            container.RegisterDecorator(typeof(IAsyncRequestHandler<>), typeof(AsyncRequestHandlerValidationDecorator<>), Lifestyle.Singleton);
+            container.Register(typeof(IValidator<>), new[] { typeof(Get.Validator) });
+            container.RegisterConditional(typeof(IValidator<>), typeof(NullValidator<>), c => !c.Handled);
 
-            container.RegisterSingleton<IAsyncRequestHandlerMediator>(new AsyncRequestHandlerMediator(container));
+            container.RegisterDecorator(typeof(IRequestHandler<,>), typeof(RequestHandlerValidator<,>));
+            container.RegisterDecorator(typeof(IRequestHandler<>), typeof(RequestHandlerValidator<>));
+
+            container.RegisterSingleton<IMediator>(new Mediator(container));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +68,8 @@ namespace SimpleWebApi
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseCustomExceptionHandler();
 
             app.UseMvc();
         }

@@ -4,28 +4,28 @@ using System.Threading.Tasks;
 
 namespace SimpleWebApi.Features.Apple
 {
-    
+    [Route("api/apples")]
     public class AppleController : Controller
     {
-        private readonly IAsyncRequestHandlerMediator _mediator;
+        private readonly IMediator _mediator;
 
-        public AppleController(IAsyncRequestHandlerMediator mediator)
+        public AppleController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        [Route("api/apples/get/{id}")]
+        [Route("{id}")]
         public async Task<Get.Response> Get(Get.Request request)
         {
-            return await _mediator.SendAsync(request);
+            return await _mediator.Send(request);
         }
 
-        [HttpGet]
-        [Route("api/apples/delete/{id}")]
+        [HttpPost]
+        [Route("{id}")]
         public async Task Delete(Delete.Request query)
         {
-            await _mediator.SendAsync(query);
+            await _mediator.Send(query);
         }
     }
 }

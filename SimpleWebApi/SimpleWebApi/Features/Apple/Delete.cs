@@ -10,11 +10,11 @@ namespace SimpleWebApi.Features.Apple
             public int Id { get; set; }
         }
 
-        public class Handler : IAsyncRequestHandler<Request>
+        public class Handler : IRequestHandler<Request>
         {
-            public Task HandleAsync(Request request)
+            public Task Handle(Request request)
             {
-                return Task.CompletedTask;
+                return Task.Delay(10);
             }
         }
     }

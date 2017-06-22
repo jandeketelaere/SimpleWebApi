@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SimpleWebApi.Infrastructure;
+using FluentValidation;
 
 namespace SimpleWebApi.Features.Apple
 {
@@ -16,21 +17,20 @@ namespace SimpleWebApi.Features.Apple
             public IEnumerable<string> Apples { get; set; }
         }
 
-        public class Validator : IAsyncRequestValidator<Request>
+        public class Validator : AbstractValidator<Request>
         {
-            public async Task<ValidationResult> ValidateAsync(Request request)
+            public Validator()
             {
-                return new ValidationResult
-                {
-                    IsSuccessful = false
-                };
+                RuleFor(req => req.Id).NotEqual(2).WithMessage("Id cannot be 2");
             }
         }
 
-        public class Handler : IAsyncRequestHandler<Request, Response>
+        public class Handler : IRequestHandler<Request, Response>
         {
-            public async Task<Response> HandleAsync(Request request)
+            public async Task<Response> Handle(Request request)
             {
+                await Task.Delay(10);
+
                 return new Response
                 {
                     Apples = new[] { "apple1", "apple2" }
