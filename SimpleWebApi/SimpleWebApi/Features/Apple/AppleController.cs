@@ -27,5 +27,11 @@ namespace SimpleWebApi.Features.Apple
         {
             await _mediator.Send(query);
         }
+
+        [HttpGet]
+        public async Task<GetAll.Response> GetAll(GetAll.Request request)
+        {
+            return await _mediator.Send(request);
+        }
     }
 }

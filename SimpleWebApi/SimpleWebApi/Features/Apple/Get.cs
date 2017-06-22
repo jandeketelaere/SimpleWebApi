@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SimpleWebApi.Infrastructure;
 using FluentValidation;
 
@@ -14,7 +13,7 @@ namespace SimpleWebApi.Features.Apple
 
         public class Response
         {
-            public IEnumerable<string> Apples { get; set; }
+            public string Name { get; set; }
         }
 
         public class Validator : AbstractValidator<Request>
@@ -33,7 +32,7 @@ namespace SimpleWebApi.Features.Apple
 
                 return new Response
                 {
-                    Apples = new[] { "apple1", "apple2" }
+                    Name = "Mr Apple"
                 };
             }
         }

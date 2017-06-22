@@ -33,7 +33,7 @@ namespace SimpleWebApi.Infrastructure
 
             dynamic handler = _services.GetService(handlerType);
 
-            return handler.HandleAsync((dynamic)request);
+            return handler.Handle((dynamic)request);
         }
     }
 }
