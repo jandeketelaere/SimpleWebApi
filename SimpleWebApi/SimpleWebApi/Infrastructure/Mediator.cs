@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleWebApi.Infrastructure
 {
     public interface IMediator
     {
-        Task<TResponse> Send<TResponse>(IRequest<TResponse> request);
-        Task Send(IRequest request);
+        Task<IActionResult> Send<TResponse>(IRequest<TResponse> request);
     }
 
     public class Mediator : IMediator
@@ -18,22 +18,23 @@ namespace SimpleWebApi.Infrastructure
             _services = services;
         }
 
-        public Task<TResponse> Send<TResponse>(IRequest<TResponse> request)
+        public async Task<IActionResult> Send<TResponse>(IRequest<TResponse> request)
         {
-            var handlerType = typeof(IRequestHandler<,>).MakeGenericType(request.GetType(), typeof(TResponse));
-            
-            dynamic handler = _services.GetService(handlerType);
+            dynamic handler = GetHandler(request.GetType(), typeof(TResponse));
 
-            return handler.Handle((dynamic)request);
+            var result = await handler.Handle((dynamic)request);
+
+            return new ObjectResult(result.IsSuccessful ? result.Value : new Error { ErrorMessage = result.ErrorMessage })
+            {
+                StatusCode = (int)result.HttpStatusCode
+            };
         }
 
-        public Task Send(IRequest request)
+        public object GetHandler(Type requestType, Type responseType)
         {
-            var handlerType = typeof(IRequestHandler<>).MakeGenericType(request.GetType());
+            var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
 
-            dynamic handler = _services.GetService(handlerType);
-
-            return handler.Handle((dynamic)request);
+            return _services.GetService(handlerType);
         }
     }
 }

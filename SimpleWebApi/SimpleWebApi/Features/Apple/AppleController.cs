@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace SimpleWebApi.Features.Apple
 {
-    [Route("api/apples")]
     public class AppleController : Controller
     {
         private readonly IMediator _mediator;
@@ -14,22 +13,14 @@ namespace SimpleWebApi.Features.Apple
             _mediator = mediator;
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<Get.Response> Get(Get.Request request)
+        [HttpGet("api/apples/simpleget/{id}")]
+        public async Task<IActionResult> SimpleGet(SimpleGet.Request request)
         {
             return await _mediator.Send(request);
         }
 
-        [HttpPost]
-        [Route("{id}")]
-        public async Task Delete(Delete.Request query)
-        {
-            await _mediator.Send(query);
-        }
-
-        [HttpGet]
-        public async Task<GetAll.Response> GetAll(GetAll.Request request)
+        [HttpGet("api/apples/simplegetwithvalidation/{id}")]
+        public async Task<IActionResult> SimpleGetWithValidation(SimpleGetWithValidation.Request request)
         {
             return await _mediator.Send(request);
         }
