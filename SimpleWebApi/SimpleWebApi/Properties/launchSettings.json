@@ -8,21 +8,21 @@
     }
   },
   "profiles": {
+    "SimpleWebApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/apples/simplegetwithdatabase/MrApple",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:63668"
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "SimpleWebApi": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/apples/simplegetwithvalidation/0",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:63668"
     }
   }
 }

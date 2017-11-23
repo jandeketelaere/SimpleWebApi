@@ -1,4 +1,4 @@
-﻿using SimpleWebApi.Infrastructure.Decorators;
+﻿using SimpleWebApi.Infrastructure.Validation;
 
 namespace SimpleWebApi.Features.Apple.SimpleGetWithValidation
 {

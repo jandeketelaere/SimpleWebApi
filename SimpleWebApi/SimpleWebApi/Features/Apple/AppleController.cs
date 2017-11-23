@@ -24,5 +24,12 @@ namespace SimpleWebApi.Features.Apple
         {
             return await _mediator.Send(request);
         }
+
+        //Should be HttpPost => easier for debugging :-)
+        [HttpGet("api/apples/simplegetwithdatabase/{name}")]
+        public async Task<IActionResult> SimpleGetWithDatabase(SimpleGetWithDatabase.Request request)
+        {
+            return await _mediator.Send(request);
+        }
     }
 }

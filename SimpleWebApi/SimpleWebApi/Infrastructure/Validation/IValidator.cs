@@ -1,4 +1,4 @@
-﻿namespace SimpleWebApi.Infrastructure.Decorators
+﻿namespace SimpleWebApi.Infrastructure.Validation
 {
     public interface IValidator<TRequest>
     {

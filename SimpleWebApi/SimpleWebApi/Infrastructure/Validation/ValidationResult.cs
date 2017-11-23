@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SimpleWebApi.Infrastructure.Decorators
+namespace SimpleWebApi.Infrastructure.Validation
 {
     public class ValidationResult
     {
