@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using SimpleWebApi.Infrastructure;
+using SimpleWebApi.Infrastructure.Decorators;
 using SimpleWebApi.Infrastructure.Logging;
 using SimpleWebApi.Infrastructure.Middleware;
 
@@ -40,6 +41,8 @@ namespace SimpleWebApi
             services.AddScoped<IApiLogger, ApiLogger>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             ConfigureHandlers(services);
+            ConfigureDecorators(services);
+            ConfigureValidators(services);
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -52,10 +55,24 @@ namespace SimpleWebApi
             app.UseMvc();
         }
 
-        private void ConfigureHandlers(IServiceCollection services)
+        private static void ConfigureHandlers(IServiceCollection services)
         {
             services.Scan(scan => scan.FromEntryAssembly()
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
+        }
+
+        private static void ConfigureDecorators(IServiceCollection services)
+        {
+            services.Decorate(typeof(IRequestHandler<,>), typeof(ValidationDecorator<,>));
+        }
+
+        private static void ConfigureValidators(IServiceCollection services)
+        {
+            services.Scan(scan => scan.FromEntryAssembly()
+                .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );

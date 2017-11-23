@@ -33,7 +33,6 @@ namespace SimpleWebApi.Infrastructure.Middleware
         {
             var request = context.Request;
             var requestBodyStream = new MemoryStream();
-            var originalRequestBody = request.Body;
 
             await request.Body.CopyToAsync(requestBodyStream);
             requestBodyStream.Seek(0, SeekOrigin.Begin);
@@ -75,7 +74,7 @@ namespace SimpleWebApi.Infrastructure.Middleware
             return responseLog;
         }
 
-        private bool IsBodyIgnoredFromResponseLogging(string path)
+        private static bool IsBodyIgnoredFromResponseLogging(string path)
         {
             var paths = new List<string>
             {

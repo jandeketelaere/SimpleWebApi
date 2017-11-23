@@ -9,9 +9,6 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithValidation
         {
             await Task.Delay(10);
 
-            if (request.Id == 0)
-                return ApiResult<Response>.BadRequest("Id cannot be 0");
-
             var response = new Response
             {
                 Name = "Mr Apple"
