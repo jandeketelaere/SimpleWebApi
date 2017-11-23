@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SimpleWebApi.Infrastructure;
-using SimpleWebApi.Features.Apple.SimpleGet;
 
-namespace SimpleWebApi.Features.Apple
+namespace SimpleWebApi.Features.Apple.SimpleGet
 {
     public class Handler : IRequestHandler<Request, Response>
     {
