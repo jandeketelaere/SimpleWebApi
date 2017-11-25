@@ -1,8 +1,8 @@
 ﻿using SimpleWebApi.Infrastructure.Validation;
 
-namespace SimpleWebApi.Features.Apple.SimpleGetWithValidation
+namespace SimpleWebApi.Features.Apple.SimpleGetWithMultipleValidations
 {
-    public class Validator : IValidator<Request>
+    public class FirstValidator : IValidator<Request>
     {
         public int Priority => 1;
 

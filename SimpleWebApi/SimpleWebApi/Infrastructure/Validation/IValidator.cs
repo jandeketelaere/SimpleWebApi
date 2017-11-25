@@ -3,5 +3,6 @@
     public interface IValidator<TRequest>
     {
         ValidationResult Validate(TRequest request);
+        int Priority { get; }
     }
 }
