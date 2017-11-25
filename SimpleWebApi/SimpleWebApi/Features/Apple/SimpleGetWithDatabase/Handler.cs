@@ -22,8 +22,6 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithDatabase
 
             await _context.AddAsync(apple);
 
-            await _context.SaveChangesAsync();
-
             return ApiResult<Response>.Ok(new Response());
         }
     }

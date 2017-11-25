@@ -22,7 +22,10 @@ namespace SimpleWebApi.Infrastructure.Transaction
                 try
                 {
                     var result =  await _handler.Handle(request);
+
+                    await _context.SaveChangesAsync();
                     transaction.Commit();
+
                     return result;
                 }
                 catch(Exception)
