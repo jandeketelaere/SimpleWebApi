@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SimpleWebApi.Features.Apple.SimpleGetWithMultipleValidations
 {
-    public class SecondValidator : IValidator<Request>
+    public class SecondValidator : IApiValidator<Request>
     {
         private readonly SimpleWebApiContext _context;
 

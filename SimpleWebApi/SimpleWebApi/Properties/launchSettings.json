@@ -11,7 +11,7 @@
     "SimpleWebApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/apples/simplegetwithmultiplevalidations/1",
+      "launchUrl": "api/apples/simplegetwithfluentvalidation/1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

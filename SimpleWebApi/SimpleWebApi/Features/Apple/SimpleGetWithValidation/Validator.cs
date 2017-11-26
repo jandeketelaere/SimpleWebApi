@@ -2,7 +2,7 @@
 
 namespace SimpleWebApi.Features.Apple.SimpleGetWithValidation
 {
-    public class Validator : IValidator<Request>
+    public class Validator : IApiValidator<Request>
     {
         public int Priority => 1;
 
