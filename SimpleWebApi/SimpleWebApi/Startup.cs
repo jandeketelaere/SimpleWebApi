@@ -44,7 +44,7 @@ namespace SimpleWebApi
             Configure(services);
             ConfigureEntityFramework(services);
             ConfigureHandlers(services);
-            ConfigureDecorators(services);
+            //ConfigureDecorators(services);
             ConfigureValidators(services);
         }
 
