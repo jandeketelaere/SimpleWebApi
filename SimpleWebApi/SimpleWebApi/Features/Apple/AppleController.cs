@@ -25,12 +25,6 @@ namespace SimpleWebApi.Features.Apple
             return await _mediator.Send(request);
         }
 
-        [HttpGet("api/apples/simplegetwithfluentvalidation/{id}")]
-        public async Task<IActionResult> SimpleGetWithFluentValidation(SimpleGetWithFluentValidation.Request request)
-        {
-            return await _mediator.Send(request);
-        }
-
         [HttpGet("api/apples/simplegetwithmultiplevalidations/{id}")]
         public async Task<IActionResult> SimpleGetWithMultipleValidations(SimpleGetWithMultipleValidations.Request request)
         {

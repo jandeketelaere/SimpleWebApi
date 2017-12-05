@@ -1,8 +1,8 @@
 ﻿namespace SimpleWebApi.Infrastructure.Validation
 {
-    public interface IApiValidator<TRequest>
+    public interface IValidator<TRequest>
     {
         ValidationResult Validate(TRequest request);
-        int Priority { get; }
+        int Order { get; }
     }
 }

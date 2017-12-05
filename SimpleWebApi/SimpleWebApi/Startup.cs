@@ -13,7 +13,6 @@ using SimpleWebApi.Infrastructure.Logging;
 using SimpleWebApi.Infrastructure.Middleware;
 using SimpleWebApi.Infrastructure.Transaction;
 using SimpleWebApi.Infrastructure.Validation;
-using FluentValidation.AspNetCore;
 
 namespace SimpleWebApi
 {
@@ -40,9 +39,7 @@ namespace SimpleWebApi
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddMvc()
-                .AddFluentValidation();
+            services.AddMvc();
 
             Configure(services);
             ConfigureEntityFramework(services);
@@ -92,7 +89,7 @@ namespace SimpleWebApi
         private static void ConfigureValidators(IServiceCollection services)
         {
             services.Scan(scan => scan.FromEntryAssembly()
-                .AddClasses(classes => classes.AssignableTo(typeof(IApiValidator<>)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );

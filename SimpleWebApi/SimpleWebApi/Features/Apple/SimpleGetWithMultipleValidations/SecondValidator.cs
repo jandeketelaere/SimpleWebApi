@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace SimpleWebApi.Features.Apple.SimpleGetWithMultipleValidations
 {
-    public class SecondValidator : IApiValidator<Request>
+    public class SecondValidator : IValidator<Request>
     {
         private readonly SimpleWebApiContext _context;
 
-        public int Priority => 2;
+        public int Order => 2;
 
         public SecondValidator(SimpleWebApiContext context)
         {

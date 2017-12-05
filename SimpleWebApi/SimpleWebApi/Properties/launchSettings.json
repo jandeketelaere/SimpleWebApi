@@ -1,28 +1,12 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:16509/",
-      "sslPort": 0
-    }
-  },
   "profiles": {
     "SimpleWebApi": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/apples/simplegetwithfluentvalidation/1",
+      "launchUrl": "api/apples/simpleget/1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:63668"
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
     }
   }
 }

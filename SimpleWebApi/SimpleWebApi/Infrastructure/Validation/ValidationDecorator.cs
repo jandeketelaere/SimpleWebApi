@@ -19,8 +19,8 @@ namespace SimpleWebApi.Infrastructure.Validation
         public async Task<ApiResult<TResponse>> Handle(TRequest request)
         {
             var validators =
-                _services.GetServices<IApiValidator<TRequest>>()
-                .OrderBy(v => v.Priority)
+                _services.GetServices<IValidator<TRequest>>()
+                .OrderBy(v => v.Order)
                 .ToList();
 
             if (validators.Any())
