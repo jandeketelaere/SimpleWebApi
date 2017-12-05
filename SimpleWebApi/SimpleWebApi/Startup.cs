@@ -77,13 +77,31 @@ namespace SimpleWebApi
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
+
+            services.Scan(scan => scan.FromEntryAssembly()
+                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
+
+            services.Scan(scan => scan.FromEntryAssembly()
+                .AddClasses(classes => classes.AssignableTo(typeof(IAsyncRequestHandler<,>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
+
+            services.Scan(scan => scan.FromEntryAssembly()
+                .AddClasses(classes => classes.AssignableTo(typeof(IAsyncRequestHandler<>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
         }
 
         //Order of registration is important. The decorator that gets registered last will be the first to execute
         private static void ConfigureDecorators(IServiceCollection services)
         {
-            services.Decorate(typeof(IRequestHandler<,>), typeof(TransactionDecorator<,>));
-            services.Decorate(typeof(IRequestHandler<,>), typeof(ValidationDecorator<,>));
+            services.Decorate(typeof(IAsyncRequestHandler<,>), typeof(TransactionDecorator<,>));
+            services.Decorate(typeof(IAsyncRequestHandler<,>), typeof(ValidationDecorator<,>));
         }
 
         private static void ConfigureValidators(IServiceCollection services)

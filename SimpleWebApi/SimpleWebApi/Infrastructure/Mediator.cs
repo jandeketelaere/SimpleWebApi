@@ -6,6 +6,7 @@ namespace SimpleWebApi.Infrastructure
 {
     public interface IMediator
     {
+        Task<IActionResult> Send(IRequest request);
         Task<IActionResult> Send<TResponse>(IRequest<TResponse> request);
     }
 
@@ -18,23 +19,34 @@ namespace SimpleWebApi.Infrastructure
             _services = services;
         }
 
-        public async Task<IActionResult> Send<TResponse>(IRequest<TResponse> request)
+        public async Task<IActionResult> Send(IRequest request)
         {
-            dynamic handler = GetHandler(request.GetType(), typeof(TResponse));
+            var handlerType = typeof(RequestHandlerWrapper<>).MakeGenericType(request.GetType());
+            var handlerWrapper = (IRequestHandlerWrapper)Activator.CreateInstance(handlerType);
 
-            var result = await handler.Handle((dynamic)request);
+            var result = await handlerWrapper.Handle(request, _services);
 
-            return new ObjectResult(result.IsSuccessful ? result.Value : new Error { ErrorMessage = result.ErrorMessage })
-            {
-                StatusCode = (int)result.HttpStatusCode
-            };
+            return result.IsSuccessful
+                ? new ObjectResult(null)
+                    { StatusCode = (int)result.HttpStatusCode }
+
+                : new ObjectResult(new Error { ErrorMessage = result.ErrorMessage })
+                    { StatusCode = (int)result.HttpStatusCode };
         }
 
-        public object GetHandler(Type requestType, Type responseType)
+        public async Task<IActionResult> Send<TResponse>(IRequest<TResponse> request)
         {
-            var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
+            var handlerType = typeof(RequestHandlerWrapper<,>).MakeGenericType(request.GetType(), typeof(TResponse));
+            var handlerWrapper = (IRequestHandlerWrapper<TResponse>)Activator.CreateInstance(handlerType);
 
-            return _services.GetService(handlerType);
+            var result = await handlerWrapper.Handle(request, _services);
+
+            return result.IsSuccessful
+                ? new ObjectResult(result.Value)
+                { StatusCode = (int)result.HttpStatusCode }
+
+                : new ObjectResult(new Error { ErrorMessage = result.ErrorMessage })
+                { StatusCode = (int)result.HttpStatusCode };
         }
     }
 }

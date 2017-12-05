@@ -2,7 +2,7 @@
 
 namespace SimpleWebApi.Features.Apple.SimpleGetWithDatabase
 {
-    public class Request : IRequest<Response>
+    public class Request : IRequest
     {
         public string Name { get; set; }
     }

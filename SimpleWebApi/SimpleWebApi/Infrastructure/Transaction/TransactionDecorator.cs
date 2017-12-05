@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 
 namespace SimpleWebApi.Infrastructure.Transaction
 {
-    public class TransactionDecorator<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public class TransactionDecorator<TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IRequestHandler<TRequest, TResponse> _handler;
+        private readonly IAsyncRequestHandler<TRequest, TResponse> _handler;
         private readonly SimpleWebApiContext _context;
 
-        public TransactionDecorator(IRequestHandler<TRequest, TResponse> handler, SimpleWebApiContext context)
+        public TransactionDecorator(IAsyncRequestHandler<TRequest, TResponse> handler, SimpleWebApiContext context)
         {
             _handler = handler;
             _context = context;
