@@ -2,9 +2,9 @@
 
 namespace SimpleWebApi.Infrastructure
 {
-    public interface IRequest { }
+    public interface IRequest : IRequest<Unit> { }
 
-    public interface IRequest<TResponse> { }
+    public interface IRequest<out TResponse> { }
 
     public interface IRequestHandler<in TRequest> where TRequest : IRequest
     {

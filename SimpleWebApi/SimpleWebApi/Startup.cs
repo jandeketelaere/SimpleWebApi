@@ -44,7 +44,7 @@ namespace SimpleWebApi
             Configure(services);
             ConfigureEntityFramework(services);
             ConfigureHandlers(services);
-            //ConfigureDecorators(services);
+            ConfigureDecorators(services);
             ConfigureValidators(services);
         }
 
@@ -73,19 +73,13 @@ namespace SimpleWebApi
         private static void ConfigureHandlers(IServiceCollection services)
         {
             services.Scan(scan => scan.FromEntryAssembly()
-                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-            );
-
-            services.Scan(scan => scan.FromEntryAssembly()
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
 
             services.Scan(scan => scan.FromEntryAssembly()
-                .AddClasses(classes => classes.AssignableTo(typeof(IAsyncRequestHandler<,>)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
@@ -95,13 +89,19 @@ namespace SimpleWebApi
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
+
+            services.Scan(scan => scan.FromEntryAssembly()
+                .AddClasses(classes => classes.AssignableTo(typeof(IAsyncRequestHandler<,>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
         }
 
         //Order of registration is important. The decorator that gets registered last will be the first to execute
         private static void ConfigureDecorators(IServiceCollection services)
         {
-            services.Decorate(typeof(IAsyncRequestHandler<,>), typeof(TransactionDecorator<,>));
-            services.Decorate(typeof(IAsyncRequestHandler<,>), typeof(ValidationDecorator<,>));
+            services.AddScoped(typeof(IRequestHandlerDecorator<,>), typeof(TransactionDecorator<,>));
+            services.AddScoped(typeof(IRequestHandlerDecorator<,>), typeof(ValidationDecorator<,>));
         }
 
         private static void ConfigureValidators(IServiceCollection services)

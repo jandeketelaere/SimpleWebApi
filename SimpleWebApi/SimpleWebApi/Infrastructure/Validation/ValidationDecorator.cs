@@ -5,27 +5,25 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SimpleWebApi.Infrastructure.Validation
 {
-    public class ValidationDecorator<TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public class ValidationDecorator<TRequest, TResponse> : IRequestHandlerDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IAsyncRequestHandler<TRequest, TResponse> _handler;
         private readonly IServiceProvider _services;
 
-        public ValidationDecorator(IAsyncRequestHandler<TRequest, TResponse> handler, IServiceProvider services)
+        public ValidationDecorator(IServiceProvider services)
         {
-            _handler = handler;
             _services = services;
         }
 
-        public async Task<ApiResult<TResponse>> Handle(TRequest request)
+        public async Task<ApiResult<TResponse>> Handle(TRequest request, RequestHandlerDelegate<TResponse> next)
         {
             var validators =
                 _services.GetServices<IValidator<TRequest>>()
-                .OrderBy(v => v.Order)
-                .ToList();
+                    .OrderBy(v => v.Order)
+                    .ToList();
 
             if (validators.Any())
             {
-                foreach(var validator in validators)
+                foreach (var validator in validators)
                 {
                     var result = validator.Validate(request);
 
@@ -34,7 +32,7 @@ namespace SimpleWebApi.Infrastructure.Validation
                 }
             }
 
-            return await _handler.Handle(request);
+            return await next();
         }
     }
 }

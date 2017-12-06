@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using SimpleWebApi.Infrastructure;
+﻿using SimpleWebApi.Infrastructure;
 
 namespace SimpleWebApi.Features.Apple.SimpleGet
 {

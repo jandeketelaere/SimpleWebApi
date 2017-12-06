@@ -1,34 +1,32 @@
-﻿using SimpleWebApi.Entities;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using SimpleWebApi.Entities;
 
 namespace SimpleWebApi.Infrastructure.Transaction
 {
-    public class TransactionDecorator<TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public class TransactionDecorator<TRequest, TResponse> : IRequestHandlerDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IAsyncRequestHandler<TRequest, TResponse> _handler;
         private readonly SimpleWebApiContext _context;
 
-        public TransactionDecorator(IAsyncRequestHandler<TRequest, TResponse> handler, SimpleWebApiContext context)
+        public TransactionDecorator(SimpleWebApiContext context)
         {
-            _handler = handler;
             _context = context;
         }
 
-        public async Task<ApiResult<TResponse>> Handle(TRequest request)
+        public async Task<ApiResult<TResponse>> Handle(TRequest request, RequestHandlerDelegate<TResponse> next)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var result =  await _handler.Handle(request);
+                    var response = await next();
 
                     await _context.SaveChangesAsync();
                     transaction.Commit();
 
-                    return result;
+                    return response;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     transaction.Rollback();
                     throw;

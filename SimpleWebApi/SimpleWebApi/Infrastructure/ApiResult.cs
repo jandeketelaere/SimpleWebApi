@@ -64,6 +64,11 @@ namespace SimpleWebApi.Infrastructure
         {
             return new ApiResult<TValue>(default(TValue), false, httpStatusCode, errorMessage);
         }
+
+        public static ApiResult<TValue> Translate(ApiResult result, TValue value)
+        {
+            return new ApiResult<TValue>(value, result.IsSuccessful, result.HttpStatusCode, result.ErrorMessage);
+        }
     }
 
     public class ApiResult
@@ -125,6 +130,11 @@ namespace SimpleWebApi.Infrastructure
         public static ApiResult Fail(HttpStatusCode httpStatusCode, string errorMessage)
         {
             return new ApiResult(false, httpStatusCode, errorMessage);
+        }
+
+        public static ApiResult Translate<TValue>(ApiResult<TValue> result)
+        {
+            return new ApiResult(result.IsSuccessful, result.HttpStatusCode, result.ErrorMessage);
         }
     }
 }

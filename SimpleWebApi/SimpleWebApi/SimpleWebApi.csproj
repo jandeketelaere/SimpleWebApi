@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Infrastructure\RequestHandler\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
