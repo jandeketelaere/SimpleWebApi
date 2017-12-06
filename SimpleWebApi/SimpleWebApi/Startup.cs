@@ -72,25 +72,25 @@ namespace SimpleWebApi
 
         private static void ConfigureHandlers(IServiceCollection services)
         {
-            services.Scan(scan => scan.FromEntryAssembly()
+            services.Scan(scan => scan.FromAssemblyOf<IMediator>()
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
 
-            services.Scan(scan => scan.FromEntryAssembly()
+            services.Scan(scan => scan.FromAssemblyOf<IMediator>()
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
 
-            services.Scan(scan => scan.FromEntryAssembly()
+            services.Scan(scan => scan.FromAssemblyOf<IMediator>()
                 .AddClasses(classes => classes.AssignableTo(typeof(IAsyncRequestHandler<>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
 
-            services.Scan(scan => scan.FromEntryAssembly()
+            services.Scan(scan => scan.FromAssemblyOf<IMediator>()
                 .AddClasses(classes => classes.AssignableTo(typeof(IAsyncRequestHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
@@ -106,7 +106,7 @@ namespace SimpleWebApi
 
         private static void ConfigureValidators(IServiceCollection services)
         {
-            services.Scan(scan => scan.FromEntryAssembly()
+            services.Scan(scan => scan.FromAssemblyOf<IMediator>()
                 .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()

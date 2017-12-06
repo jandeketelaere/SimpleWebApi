@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace SimpleWebApi.Infrastructure
 {
     public interface IMediator
     {
-        Task<IActionResult> Send(IRequest request);
-        Task<IActionResult> Send<TResponse>(IRequest<TResponse> request);
+        Task<ApiResult> Send(IRequest request);
+        Task<ApiResult<TResponse>> Send<TResponse>(IRequest<TResponse> request);
     }
 
     public class Mediator : IMediator
@@ -19,34 +18,20 @@ namespace SimpleWebApi.Infrastructure
             _services = services;
         }
 
-        public async Task<IActionResult> Send(IRequest request)
+        public Task<ApiResult> Send(IRequest request)
         {
             var handlerType = typeof(RequestHandlerWrapper<>).MakeGenericType(request.GetType());
             var handlerWrapper = (IRequestHandlerWrapper)Activator.CreateInstance(handlerType);
 
-            var result = await handlerWrapper.Handle(request, _services);
-
-            return result.IsSuccessful
-                ? new ObjectResult(null)
-                    { StatusCode = (int)result.HttpStatusCode }
-
-                : new ObjectResult(new Error { ErrorMessage = result.ErrorMessage })
-                    { StatusCode = (int)result.HttpStatusCode };
+            return handlerWrapper.Handle(request, _services);
         }
 
-        public async Task<IActionResult> Send<TResponse>(IRequest<TResponse> request)
+        public Task<ApiResult<TResponse>> Send<TResponse>(IRequest<TResponse> request)
         {
             var handlerType = typeof(RequestHandlerWrapper<,>).MakeGenericType(request.GetType(), typeof(TResponse));
             var handlerWrapper = (IRequestHandlerWrapper<TResponse>)Activator.CreateInstance(handlerType);
 
-            var result = await handlerWrapper.Handle(request, _services);
-
-            return result.IsSuccessful
-                ? new ObjectResult(result.Value)
-                { StatusCode = (int)result.HttpStatusCode }
-
-                : new ObjectResult(new Error { ErrorMessage = result.ErrorMessage })
-                { StatusCode = (int)result.HttpStatusCode };
+            return handlerWrapper.Handle(request, _services);
         }
     }
 }

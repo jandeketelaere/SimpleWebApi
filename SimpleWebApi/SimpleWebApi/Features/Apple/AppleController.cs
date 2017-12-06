@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleWebApi.Infrastructure;
 using System.Threading.Tasks;
+using static SimpleWebApi.Infrastructure.ApiResultToActionResultMapper;
 
 namespace SimpleWebApi.Features.Apple
 {
@@ -16,26 +17,26 @@ namespace SimpleWebApi.Features.Apple
         [HttpGet("api/apples/simpleget/{id}")]
         public async Task<IActionResult> SimpleGet(SimpleGet.Request request)
         {
-            return await _mediator.Send(request);
+            return ToActionResult(await _mediator.Send(request));
         }
 
         [HttpGet("api/apples/simplegetwithvalidation/{id}")]
         public async Task<IActionResult> SimpleGetWithValidation(SimpleGetWithValidation.Request request)
         {
-            return await _mediator.Send(request);
+            return ToActionResult(await _mediator.Send(request));
         }
 
         [HttpGet("api/apples/simplegetwithmultiplevalidations/{id}")]
         public async Task<IActionResult> SimpleGetWithMultipleValidations(SimpleGetWithMultipleValidations.Request request)
         {
-            return await _mediator.Send(request);
+            return ToActionResult(await _mediator.Send(request));
         }
 
         //Should be HttpPost => easier for debugging :-)
         [HttpGet("api/apples/simplegetwithdatabase/{name}")]
         public async Task<IActionResult> SimpleGetWithDatabase(SimpleGetWithDatabase.Request request)
         {
-            return await _mediator.Send(request);
+            return ToActionResult(await _mediator.Send(request));
         }
     }
 }
