@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +20,7 @@ namespace SimpleWebApi.Infrastructure
         {
             var handler = GetRequestHandlerDelegate(request, services);
 
-            foreach (var decorator in services.GetServices(typeof(IRequestHandlerDecorator<TRequest, Unit>)).Cast<IRequestHandlerDecorator<TRequest, Unit>>())
+            foreach (var decorator in services.GetServices<IRequestHandlerDecorator<TRequest, Unit>>())
             {
                 var previousHandler = handler;
                 handler = () => decorator.Handle((TRequest)request, previousHandler);
@@ -32,21 +31,21 @@ namespace SimpleWebApi.Infrastructure
 
         private static RequestHandlerDelegate<Unit> GetRequestHandlerDelegate(IRequest request, IServiceProvider services)
         {
-            if (HandlerExists<IAsyncRequestHandler<TRequest>>(services))
+            if (services.GetService<IAsyncRequestHandler<TRequest>>() != null)
             {
                 return async () =>
                 {
-                    var handler = GetHandler<IAsyncRequestHandler<TRequest>>(services);
+                    var handler = services.GetService<IAsyncRequestHandler<TRequest>>();
                     var response = await handler.Handle((TRequest)request);
                     return ApiResult<Unit>.Translate(response, Unit.Value);
                 };
             }
 
-            if (HandlerExists<IRequestHandler<TRequest>>(services))
+            if (services.GetService<IRequestHandler<TRequest>>() != null)
             {
                 return async () =>
                 {
-                    var handler = GetHandler<IRequestHandler<TRequest>>(services);
+                    var handler = services.GetService<IRequestHandler<TRequest>>();
                     var response = await Task.FromResult(handler.Handle((TRequest)request));
                     return ApiResult<Unit>.Translate(response, Unit.Value);
                 };
@@ -54,10 +53,6 @@ namespace SimpleWebApi.Infrastructure
 
             throw new InvalidOperationException($"No handler was found for request of type {request.GetType()}");
         }
-
-        private static bool HandlerExists<THandler>(IServiceProvider services) => GetHandler<THandler>(services) != null;
-
-        private static THandler GetHandler<THandler>(IServiceProvider services) => (THandler)services.GetService(typeof(THandler));
     }
 
     public class RequestHandlerWrapper<TRequest, TResponse> : IRequestHandlerWrapper<TResponse> where TRequest : IRequest<TResponse>
@@ -66,7 +61,7 @@ namespace SimpleWebApi.Infrastructure
         {
             var handler = GetRequestHandlerDelegate(request, services);
 
-            foreach (var decorator in services.GetServices(typeof(IRequestHandlerDecorator<TRequest, TResponse>)).Cast<IRequestHandlerDecorator<TRequest, TResponse>>())
+            foreach (var decorator in services.GetServices<IRequestHandlerDecorator<TRequest, TResponse>>())
             {
                 var previousHandler = handler;
                 handler = () => decorator.Handle((TRequest)request, previousHandler);
@@ -77,29 +72,25 @@ namespace SimpleWebApi.Infrastructure
 
         private static RequestHandlerDelegate<TResponse> GetRequestHandlerDelegate(IRequest<TResponse> request, IServiceProvider services)
         {
-            if (HandlerExists<IAsyncRequestHandler<TRequest, TResponse>>(services))
+            if (services.GetService<IAsyncRequestHandler<TRequest, TResponse>>() != null)
             {
                 return async () =>
                 {
-                    var handler = GetHandler<IAsyncRequestHandler<TRequest, TResponse>>(services);
+                    var handler = services.GetService<IAsyncRequestHandler<TRequest, TResponse>>();
                     return await handler.Handle((TRequest)request);
                 };
             }
 
-            if (HandlerExists<IRequestHandler<TRequest, TResponse>>(services))
+            if (services.GetService<IRequestHandler<TRequest, TResponse>>() != null)
             {
                 return async () =>
                 {
-                    var handler = GetHandler<IRequestHandler<TRequest, TResponse>>(services);
+                    var handler = services.GetService<IRequestHandler<TRequest, TResponse>>();
                     return await Task.FromResult(handler.Handle((TRequest)request));
                 };
             }
 
             throw new InvalidOperationException($"No handler was found for request of type {request.GetType()}");
         }
-
-        private static bool HandlerExists<THandler>(IServiceProvider services) => GetHandler<THandler>(services) != null;
-
-        private static THandler GetHandler<THandler>(IServiceProvider services) => (THandler)services.GetService(typeof(THandler));
     }
 }
