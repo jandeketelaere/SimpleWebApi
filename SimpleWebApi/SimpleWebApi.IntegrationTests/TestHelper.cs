@@ -1,15 +1,15 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using FakeItEasy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using SimpleWebApi.Infrastructure;
+using System.Threading.Tasks;
+using System;
 
 namespace SimpleWebApi.IntegrationTests
 {
     public static class TestHelper
     {
-        private static readonly IServiceProvider Services;
+        public static readonly IServiceScopeFactory ScopeFactory;
 
         static TestHelper()
         {
@@ -20,9 +20,16 @@ namespace SimpleWebApi.IntegrationTests
             var startup = new Startup(host);
             var serviceCollection = new ServiceCollection();
             startup.ConfigureServices(serviceCollection);
-            Services = serviceCollection.BuildServiceProvider();
+            var provider = serviceCollection.BuildServiceProvider();
+            ScopeFactory = provider.GetService<IServiceScopeFactory>();
         }
 
-        public static IMediator Mediator => Services.GetService<IMediator>();
+        public static async Task RunTest(Task<Action<IServiceScope>> action)
+        {
+            using (var scope = ScopeFactory.CreateScope())
+            {
+                (await action)(scope);
+            }
+        }
     }
 }

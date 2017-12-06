@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWebApi.Features.Apple.SimpleGetWithDatabase
 {
-    public class Handler : IAsyncRequestHandler<Request>
+    public class Handler : IAsyncRequestHandler<Request, Response>
     {
         private readonly SimpleWebApiContext _context;
 
@@ -13,7 +13,7 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithDatabase
             _context = context;
         }
 
-        public async Task<ApiResult> Handle(Request request)
+        public async Task<ApiResult<Response>> Handle(Request request)
         {
             var apple = new Entities.Apple
             {
@@ -22,7 +22,12 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithDatabase
 
             await _context.AddAsync(apple);
 
-            return ApiResult.Ok();
+            await _context.SaveChangesAsync();
+
+            return ApiResult<Response>.Ok(new Response
+            {
+                Id = apple.Id
+            });
         }
     }
 }

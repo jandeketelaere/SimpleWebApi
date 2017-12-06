@@ -48,18 +48,6 @@ namespace SimpleWebApi
             ConfigureValidators(services);
         }
 
-        private static void ConfigureEntityFramework(IServiceCollection services)
-        {
-            services.AddDbContext<SimpleWebApiContext>(options => options.UseSqlServer("Data Source=localhost;Initial Catalog=SimpleWebApi;Integrated Security=SSPI;"));
-        }
-
-        private static void Configure(IServiceCollection services)
-        {
-            services.AddScoped<IMediator, Mediator>();
-            services.AddScoped<IApiLogger, ApiLogger>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        }
-
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddSerilog();
@@ -68,6 +56,18 @@ namespace SimpleWebApi
             app.UseRequestResponseLogging();
 
             app.UseMvc();
+        }
+
+        private void ConfigureEntityFramework(IServiceCollection services)
+        {
+            services.AddDbContext<SimpleWebApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SimpleWebApi")), ServiceLifetime.Scoped);
+        }
+
+        private static void Configure(IServiceCollection services)
+        {
+            services.AddScoped<IMediator, Mediator>();
+            services.AddScoped<IApiLogger, ApiLogger>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         private static void ConfigureHandlers(IServiceCollection services)
