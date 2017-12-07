@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using Xunit;
 using static SimpleWebApi.IntegrationTests.TestHelper;
 using Request = SimpleWebApi.Features.Apple.SimpleGetWithDatabase.Request;
-using Microsoft.Extensions.DependencyInjection;
-using SimpleWebApi.Infrastructure;
-using SimpleWebApi.Entities;
 
 namespace SimpleWebApi.IntegrationTests.Features.Apple
 {
@@ -16,28 +13,22 @@ namespace SimpleWebApi.IntegrationTests.Features.Apple
         [Fact]
         public async Task ShouldCreateAnApple()
         {
-            using (var scope = ScopeFactory.CreateScope())
+            const string name = "Apple";
+
+            var request = new Request
             {
-                var mediator = scope.ServiceProvider.GetService<IMediator>();
-                var context = scope.ServiceProvider.GetService<SimpleWebApiContext>();
+                Name = name
+            };
 
-                var name = "Apple";
+            var response = await Send(request);
 
-                var request = new Request
-                {
-                    Name = name
-                };
+            response.IsSuccessful.ShouldBeTrue();
+            response.HttpStatusCode.ShouldBe(HttpStatusCode.OK);
+            
+            var newApple = await ExecuteDbContext(db => db.Apples.SingleOrDefaultAsync(a => a.Id == response.Value.Id));
 
-                var response = await mediator.Send(request);
-
-                response.IsSuccessful.ShouldBeTrue();
-                response.HttpStatusCode.ShouldBe(HttpStatusCode.OK);
-
-                var newApple = await context.Apples.SingleOrDefaultAsync(a => a.Id == response.Value.Id);
-
-                newApple.ShouldNotBeNull();
-                newApple.Name.ShouldBe(name);
-            }
+            newApple.ShouldNotBeNull();
+            newApple.Name.ShouldBe(name);
         }
     }
 }

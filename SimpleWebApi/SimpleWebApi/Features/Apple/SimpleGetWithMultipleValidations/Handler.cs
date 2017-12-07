@@ -8,7 +8,7 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithMultipleValidations
         {
             var response = new Response
             {
-                Name = "Mr Apple"
+                Name = request.Name
             };
 
             return ApiResult<Response>.Ok(response);

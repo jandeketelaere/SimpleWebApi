@@ -1,0 +1,13 @@
+﻿USE master;
+
+CREATE DATABASE SimpleWebApi;
+
+GO
+
+USE SimpleWebApi;
+
+CREATE TABLE dbo.Apple
+(
+	Id INT IDENTITY(1,1) PRIMARY KEY CLUSTERED,
+	Name VARCHAR(100)
+)

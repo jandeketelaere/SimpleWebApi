@@ -8,8 +8,8 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithMultipleValidations
 
         public ValidationResult Validate(Request request)
         {
-            if (request.Id == 0)
-                return ValidationResult.BadRequest("Id cannot be 0");
+            if (string.IsNullOrEmpty(request.Name))
+                return ValidationResult.BadRequest("Name is required");
 
             return ValidationResult.Ok();
         }

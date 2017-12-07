@@ -17,8 +17,8 @@ namespace SimpleWebApi.Features.Apple.SimpleGetWithMultipleValidations
 
         public ValidationResult Validate(Request request)
         {
-            if (_context.Apples.Any(a => a.Id == request.Id))
-                return ValidationResult.BadRequest($"An apple with Id {request.Id} already exists");
+            if (_context.Apples.Any(a => a.Name == request.Name))
+                return ValidationResult.BadRequest($"An apple with name {request.Name} already exists");
 
             return ValidationResult.Ok();
         }

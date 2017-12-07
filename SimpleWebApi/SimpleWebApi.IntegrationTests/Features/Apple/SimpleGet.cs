@@ -4,8 +4,6 @@ using Xunit;
 using static SimpleWebApi.IntegrationTests.TestHelper;
 using Request = SimpleWebApi.Features.Apple.SimpleGet.Request;
 using System.Net;
-using SimpleWebApi.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace SimpleWebApi.IntegrationTests.Features.Apple
 {
@@ -14,21 +12,16 @@ namespace SimpleWebApi.IntegrationTests.Features.Apple
         [Fact]
         public async Task ShouldReturnMrApple()
         {
-            using (var scope = ScopeFactory.CreateScope())
+            var request = new Request
             {
-                var mediator = scope.ServiceProvider.GetService<IMediator>();
+                Id = 1
+            };
 
-                var request = new Request
-                {
-                    Id = 1
-                };
+            var response = await Send(request);
 
-                var response = await mediator.Send(request);
-
-                response.IsSuccessful.ShouldBeTrue();
-                response.HttpStatusCode.ShouldBe(HttpStatusCode.OK);
-                response.Value.Name.ShouldBe("Mr Apple");
-            }
+            response.IsSuccessful.ShouldBeTrue();
+            response.HttpStatusCode.ShouldBe(HttpStatusCode.OK);
+            response.Value.Name.ShouldBe("Mr Apple");
         }
     }
 }
