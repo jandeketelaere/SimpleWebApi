@@ -60,7 +60,7 @@ namespace SimpleWebApi
 
         private void ConfigureEntityFramework(IServiceCollection services)
         {
-            services.AddDbContext<SimpleWebApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SimpleWebApi")), ServiceLifetime.Scoped);
+            services.AddDbContext<SimpleWebApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SimpleWebApi")));
         }
 
         private static void Configure(IServiceCollection services)

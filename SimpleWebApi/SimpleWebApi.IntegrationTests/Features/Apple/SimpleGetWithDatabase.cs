@@ -13,7 +13,7 @@ namespace SimpleWebApi.IntegrationTests.Features.Apple
         [Fact]
         public async Task ShouldCreateAnApple()
         {
-            const string name = "Apple";
+            const string name = "NewApple";
 
             var request = new Request
             {
