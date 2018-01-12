@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleWebApi.Infrastructure;
 using System.Threading.Tasks;
+using SimpleWebApi.Features.Apple.SimpleGet;
 using static SimpleWebApi.Infrastructure.ApiResultToActionResultMapper;
 
 namespace SimpleWebApi.Features.Apple

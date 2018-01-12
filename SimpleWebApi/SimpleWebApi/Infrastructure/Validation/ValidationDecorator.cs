@@ -1,29 +1,23 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace SimpleWebApi.Infrastructure.Validation
 {
     public class ValidationDecorator<TRequest, TResponse> : IRequestHandlerDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IServiceProvider _services;
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        public ValidationDecorator(IServiceProvider services)
+        public ValidationDecorator(IEnumerable<IValidator<TRequest>> validators)
         {
-            _services = services;
+            _validators = validators;
         }
 
         public async Task<ApiResult<TResponse>> Handle(TRequest request, RequestHandlerDelegate<TResponse> next)
         {
-            var validators =
-                _services.GetServices<IValidator<TRequest>>()
-                    .OrderBy(v => v.Order)
-                    .ToList();
-
-            if (validators.Any())
+            if (_validators.Any())
             {
-                foreach (var validator in validators)
+                foreach (var validator in _validators.OrderBy(v => v.Order))
                 {
                     var result = validator.Validate(request);
 
