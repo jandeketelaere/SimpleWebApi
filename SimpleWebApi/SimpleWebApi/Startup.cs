@@ -41,6 +41,8 @@ namespace SimpleWebApi
         {
             services.AddMvc();
 
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog());
+
             Configure(services);
             ConfigureEntityFramework(services);
             ConfigureHandlers(services);
@@ -50,8 +52,6 @@ namespace SimpleWebApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddSerilog();
-
             app.UseCustomExceptionHandler();
             app.UseRequestResponseLogging();
 
